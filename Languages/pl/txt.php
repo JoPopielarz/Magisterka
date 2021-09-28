@@ -11,22 +11,17 @@ $txtBladZapytania = "Błąd zapytania";
 
 //Logowanie - napisy
 $napLogowanie = "Logowanie";
-$napBrakKonta = "Nie masz jeszcze konta? Zmień to już teraz: ";
+$napRejestracja = "Rejestracja";
+$napBrakKonta = "Nie masz jeszcze konta? Zmień to już teraz!";
 $NapNazwa = "Nazwa użytkownika: ";
 $NapMail = "E-mail: ";
 $NapHaslo = "Hasło: ";
 $NapHaslo2 = "Powtórz hasło: ";
-$NapNazwisko = "Imię i nazwisko: ";
-$NapAdres = "Adres: ";
-$NapMiejscowosc = "Miejscowość: ";
 $NapRola = "Rola użytkownika: ";
 $NapPacjent = "Pacjent";
 $NapLekarz = "Lekarz";
 $plhNazwa = "Nazwa użytkownika";
 $plhMail = "podaj@swój.email";
-$plhNazwisko = "Imię Nazwisko";
-$plhAdres = "Ulica, nr budynku";
-$plhMiejscowosc = "Miejscowość";
 
 //Menu
 $mn_konto = "Konto";
@@ -66,9 +61,6 @@ $btMojeKonto = "MOJE KONTO";
 
 //Formularz - Edycja konta
 $lblUzytkownikFrmEK = "Nazwa użytkownika:";
-$lblImieNazwiskoFrmEK = "Imię i Nazwisko:";
-$lblAdresFrmEK = "Adres:";
-$lblMiejscowoscFrmEK = "Miejscowość:";
 $lblMailFrmEK = "Mail:";
 $lblHasloFrmEK = "Hasło:";
 $lblHaslo2FrmEK = "Powtórz hasło:";
@@ -85,7 +77,6 @@ $plhWprowadzilDP = "wprowadził";
 
 //Formularze - lekarz
 $lblPacjentWP = "Login pacjenta:";
-$lblImieNazwiskoWP = "Imię i Nazwisko:";
 $lblDataPoczWP = "Wyświetl pomiary od:";
 $lblParametrWD = "Parametr:";
 $lblPomiarWD = "Minimalna wartość pomiaru:";
@@ -102,9 +93,6 @@ $nagWprowadzil = "Wprowadził";
 $nagAkcja = "Akcja";
 $nagParametr = "Parametr";
 $nagNazwaUz = "Nazwa użytkownika";
-$nagImieNazwisko = "Imię i Nazwisko";
-$nagAdres = "Adres";
-$nagMiejscowosc = "Miejscowość";
 $nagMail = "Mail";
 $nagRola = "Rola";
 ?>

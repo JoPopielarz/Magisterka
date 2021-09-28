@@ -27,12 +27,12 @@ w „index.php”. Za pomocą zapytania SELECT polecenie wypisuje zawartość ta
 jednego rekordu.</br>
 <br><i>Zakładka „Edytuj konto”</i> to operacja 203 w „index.php”. Polecenie wypisuje zawartość tabeli użytkownicy w bazie 
 danych zapytaniem SELECT. Poniżej dołączony jest formularz „frmEdytujKonto.php”, zawierający pola do podania nazwy 
-użytkownika, imienia i nazwiska, adresu, miejscowości, adresu e-mail oraz dwa pola hasła. Wszystkie dane muszą zostać 
-podane przed użyciem przycisku „Potwierdź”. Przycisk ten odsyła do operacji 203 w „operacjeDB.php”. Wartości wprowadzone 
-w polach hasła są porównywane, jeśli się różnią wyświetlany jest komunikat oraz przycisk „POWRÓT” odsyłający do operacji 
-203 w pliku „index.php”. Natomiast jeśli hasła się zgadzają zostaje przygotowane zapytanie UPDATE dla bazy danych. Wartości 
-podane przez użytkownika w formularzu oraz id ze zmiennej globalnej $_SESSION[‘iduzytkownika’] ustawiane są jako parametr 
-tego zapytania za pomocą funkcji bind_param.</br>
+użytkownika, adresu e-mail oraz dwa pola hasła. Wszystkie dane muszą zostać podane przed użyciem przycisku „Potwierdź”. 
+Przycisk ten odsyła do operacji 203 w „operacjeDB.php”. Wartości wprowadzone w polach hasła są porównywane, jeśli się 
+różnią wyświetlany jest komunikat oraz przycisk „POWRÓT” odsyłający do operacji 203 w pliku „index.php”. Natomiast jeśli 
+hasła się zgadzają zostaje przygotowane zapytanie UPDATE dla bazy danych. Wartości podane przez użytkownika w formularzu 
+oraz id ze zmiennej globalnej $_SESSION[‘iduzytkownika’] ustawiane są jako parametr tego zapytania za pomocą funkcji 
+bind_param.</br>
 <br><i>Zakładka „Usuń konto”</i> jest operacją 204 w pliku „index.php”, która wyświetla dane aktualnie zalogowanego 
 użytkownika z tabeli użytkownicy, komunikat proszący o potwierdzenie działania oraz przycisk „USUŃ” odsyłający do operacji 
 204 w „operacjeDB.php”, usuwającej za pomocą zapytania DELETE użytkownika o id ze zmiennej globalnej 

@@ -35,19 +35,52 @@ else
 $kodOperacji = (int) $kodOperacji;
 switch ($kodOperacji){
     case 203:  //Edycja konta
+        //Flaga udanej walidacji konta
+        $walidacja = true;
+        //Sprawdzenie loginu
+        if((strlen($_POST['uzytkownik'])<3) || (strlen($_POST['uzytkownik'])>20)){
+            $walidacja = false;
+            $_SESSION['bladEdycji'] = "Nazwa użytkownika musi posiadać od 3 do 20 znaków!";
+            header("Location: index.php?operacja=203");
+        }
+        if(ctype_alnum($_POST['uzytkownik']) == false){
+            $walidacja = false;
+            $_SESSION['bladEdycji'] = "Nazwa użytkownika może składać się tylko z liter i cyfr (bez polskich znaków)";
+            header("Location: index.php?operacja=203");
+        }
+        //Sprawdzanie adresu e-mail
+        $emailSafe = filter_var($_POST['mail'], FILTER_SANITIZE_EMAIL);
+        if((filter_var($emailSafe, FILTER_VALIDATE_EMAIL)==false) || ($emailSafe!=$_POST['mail'])){
+            $walidacja = false;
+            $_SESSION['bladEdycji'] = "Podaj poprawny adres e-mail!";
+            header("Location: index.php?operacja=203");
+        }
+        //Sprawdzenie hasła
+        if((strlen($_POST['haslo'])<8) || (strlen($_POST['haslo'])>20)){
+            $walidacja = false;
+            $_SESSION['bladEdycji'] = "Hasło musi posiadać od 8 do 20 znaków!";
+            header("Location: index.php?operacja=203");
+        }
+        if((preg_match('/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])/', $_POST['haslo'])) == false){
+            $walidacja = false;
+            $_SESSION['bladEdycji'] = "Hasło musi zawierać co najmniej 1 dużą literę i 1 cyfrę";
+            header("Location: index.php?operacja=203");
+        }
         if($_POST['haslo'] != $_POST['haslo2']){
-            echo "<h4 style=\"text-align: center\">Wprowadzone hasła się różnią - spróbuj ponownie</h4>";
-            echo '<button style="margin-left: 50%"><a href="index.php?operacja=203">' . $btPowrot . '</a></button>';
-        }else{
+            $walidacja = false;
+            $_SESSION['bladEdycji'] = "Podane hasła się różnią!";
+            header("Location: index.php?operacja=203");
+        }
+        //Hashowanie hasła
+        $hasloHash = password_hash($_POST['haslo'], PASSWORD_DEFAULT);
+
+        if($walidacja == true){
             $szablon = $mojePolaczenie->prepare($KONTOupdate);
-            $szablon->bind_param("ssssssd", $val1, $val2, $val3, $val4, $val5, $val6, $val7);
+            $szablon->bind_param("sssd", $val1, $val2, $val3, $val4);
             $val1 = $_POST['uzytkownik'];
-            $val2 = $_POST['ImieNazwisko'];
-            $val3 = $_POST['adres'];
-            $val4 = $_POST['miejscowosc'];
-            $val5 = $_POST['mail'];
-            $val6 = $_POST['haslo'];
-            $val7 = $_POST['id'];
+            $val2 = $_POST['mail'];
+            $val3 = $hasloHash;
+            $val4 = $_POST['id'];
             $szablon->execute();
             echo "Zmieniono dane użytkownika " . $_POST['uzytkownik'] . "<br>";
             $szablon->close();
@@ -69,19 +102,36 @@ switch ($kodOperacji){
         echo '<a href="index.php">' . $btPowrot . '</a>';
         break;
     case 302:  //Dodanie rekordu - tetno
-        if(isset($_POST['data']) && $_POST['godzina'] && $_POST['pomiar'] && $_SESSION['iduzytkownika']){
-            $szablon = $mojePolaczenie->prepare($TETNOinsert);
-            $szablon->bind_param("dssss", $val1, $val2, $val3, $val4, $val5);
-            $val1 = $_SESSION['iduzytkownika'];
-            $val2 = $_POST['data'];
-            $val3 = $_POST['godzina'];
-            $val4 = $_POST['pomiar'];
-            $val5 = $_SESSION['zalogowany'];
-            $szablon->execute();
+        if(isset($_POST['data'])){
+            //Walidacja wprowadzonych danych
+            $walidacja = true;
+            //Sprawdzenie godziny
+            if((preg_match('/^((0[0-9]|1[0-9]|2[0-3])[.][0-5][0-9])/', $_POST['godzina'])) == false){
+                $walidacja = false;
+                $_SESSION['bladEdycji'] = "Wprowadź godzinę w formacie gg.mm";
+                header("Location: index.php?operacja=302");
+            }
+            //Sprawdzenie pomiaru
+            if(ctype_digit($_POST['pomiar']) == false || ($_POST['pomiar'] < 30) || ($_POST['pomiar'] > 200)){
+                $walidacja = false;
+                $_SESSION['bladEdycji'] = "Wprowadź prawidłową wartość pomiaru (zakres 30-200)";
+                header("Location: index.php?operacja=302");
+            }
+
+            if($walidacja == true){
+                $szablon = $mojePolaczenie->prepare($TETNOinsert);
+                $szablon->bind_param("dssss", $val1, $val2, $val3, $val4, $val5);
+                $val1 = $_SESSION['iduzytkownika'];
+                $val2 = $_POST['data'];
+                $val3 = $_POST['godzina'];
+                $val4 = $_POST['pomiar'];
+                $val5 = $_SESSION['zalogowany'];
+                $szablon->execute();
+                echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
+                $szablon->close();
+                echo '<a href="index.php?operacja=301">' . $btPowrot . '</a>';
+            }
         }
-        echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
-        $szablon->close();
-        echo '<a href="index.php?operacja=301">' . $btPowrot . '</a>';
         break;
     case 303:  //Usunięcie rekordu - tetno
         $szablon = $mojePolaczenie->prepare($TETNOdelete);
@@ -94,19 +144,36 @@ switch ($kodOperacji){
         break;
 
     case 402:  //Dodanie rekordu - ciśnienie
-        if(isset($_POST['data']) && $_POST['godzina'] && $_POST['pomiar'] && $_SESSION['iduzytkownika']){
-            $szablon = $mojePolaczenie->prepare($CISNIENIEinsert);
-            $szablon->bind_param("dssss", $val1, $val2, $val3, $val4, $val5);
-            $val1 = $_SESSION['iduzytkownika'];
-            $val2 = $_POST['data'];
-            $val3 = $_POST['godzina'];
-            $val4 = $_POST['pomiar'];
-            $val5 = $_SESSION['zalogowany'];
-            $szablon->execute();
+        if(isset($_POST['data'])){
+            //Walidacja wprowadzonych danych
+            $walidacja = true;
+            //Sprawdzenie godziny
+            if((preg_match('/^((0[0-9]|1[0-9]|2[0-3])[.][0-5][0-9])/', $_POST['godzina'])) == false){
+                $walidacja = false;
+                $_SESSION['bladEdycji'] = "Wprowadź godzinę w formacie gg.mm";
+                header("Location: index.php?operacja=402");
+            }
+            //Sprawdzenie pomiaru
+            if((preg_match('/^(([8-9][0-9]|1[0-4][0-9])\/[4-9][0-9]|1[0-1][0-9])/', $_POST['pomiar'])) == false){
+                $walidacja = false;
+                $_SESSION['bladEdycji'] = "Wprowadź prawidłową wartość pomiaru: skurczowe/rozkurczowe (zakres skurczowe 80-149, a rozkurczowe 40-119)";
+                header("Location: index.php?operacja=402");
+            }
+
+            if($walidacja == true){
+                $szablon = $mojePolaczenie->prepare($CISNIENIEinsert);
+                $szablon->bind_param("dssss", $val1, $val2, $val3, $val4, $val5);
+                $val1 = $_SESSION['iduzytkownika'];
+                $val2 = $_POST['data'];
+                $val3 = $_POST['godzina'];
+                $val4 = $_POST['pomiar'];
+                $val5 = $_SESSION['zalogowany'];
+                $szablon->execute();
+                echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
+                $szablon->close();
+                echo '<a href="index.php?operacja=401">' . $btPowrot . '</a>';
+            }
         }
-        echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
-        $szablon->close();
-        echo '<a href="index.php?operacja=401">' . $btPowrot . '</a>';
         break;
 
     case 403:  //Usuwanie rekordu - ciśnienie
@@ -120,19 +187,36 @@ switch ($kodOperacji){
         break;
 
     case 502:  //Dodanie rekordu - saturacja
-        if(isset($_POST['data']) && $_POST['godzina'] && $_POST['pomiar'] && $_SESSION['iduzytkownika']){
-            $szablon = $mojePolaczenie->prepare($SATURACJAinsert);
-            $szablon->bind_param("dssss", $val1, $val2, $val3, $val4, $val5);
-            $val1 = $_SESSION['iduzytkownika'];
-            $val2 = $_POST['data'];
-            $val3 = $_POST['godzina'];
-            $val4 = $_POST['pomiar'];
-            $val5 = $_SESSION['zalogowany'];
-            $szablon->execute();
+        if(isset($_POST['data'])){
+            //Walidacja wprowadzonych danych
+            $walidacja = true;
+            //Sprawdzenie godziny
+            if((preg_match('/^((0[0-9]|1[0-9]|2[0-3])[.][0-5][0-9])/', $_POST['godzina'])) == false){
+                $walidacja = false;
+                $_SESSION['bladEdycji'] = "Wprowadź godzinę w formacie gg.mm";
+                header("Location: index.php?operacja=502");
+            }
+            //Sprawdzenie pomiaru
+            if(ctype_digit($_POST['pomiar']) == false || ($_POST['pomiar'] < 10) || ($_POST['pomiar'] > 100)){
+                $walidacja = false;
+                $_SESSION['bladEdycji'] = "Wprowadź prawidłową wartość pomiaru (zakres 10-100)";
+                header("Location: index.php?operacja=502");
+            }
+
+            if($walidacja == true){
+                $szablon = $mojePolaczenie->prepare($SATURACJAinsert);
+                $szablon->bind_param("dssss", $val1, $val2, $val3, $val4, $val5);
+                $val1 = $_SESSION['iduzytkownika'];
+                $val2 = $_POST['data'];
+                $val3 = $_POST['godzina'];
+                $val4 = $_POST['pomiar'];
+                $val5 = $_SESSION['zalogowany'];
+                $szablon->execute();
+                echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
+                $szablon->close();
+                echo '<a href="index.php?operacja=501">' . $btPowrot . '</a>';
+            }
         }
-        echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
-        $szablon->close();
-        echo '<a href="index.php?operacja=501">' . $btPowrot . '</a>';
         break;
 
     case 503:  //Usuwanie rekordu - saturacja
@@ -146,19 +230,36 @@ switch ($kodOperacji){
         break;
 
     case 602:  //Dodanie rekordu - cukier
-        if(isset($_POST['data']) && $_POST['godzina'] && $_POST['pomiar'] && $_SESSION['iduzytkownika']){
-            $szablon = $mojePolaczenie->prepare($CUKIERinsert);
-            $szablon->bind_param("dssss", $val1, $val2, $val3, $val4, $val5);
-            $val1 = $_SESSION['iduzytkownika'];
-            $val2 = $_POST['data'];
-            $val3 = $_POST['godzina'];
-            $val4 = $_POST['pomiar'];
-            $val5 = $_SESSION['zalogowany'];
-            $szablon->execute();
+        if(isset($_POST['data'])){
+            //Walidacja wprowadzonych danych
+            $walidacja = true;
+            //Sprawdzenie godziny
+            if((preg_match('/^((0[0-9]|1[0-9]|2[0-3])[.][0-5][0-9])/', $_POST['godzina'])) == false){
+                $walidacja = false;
+                $_SESSION['bladEdycji'] = "Wprowadź godzinę w formacie gg.mm";
+                header("Location: index.php?operacja=602");
+            }
+            //Sprawdzenie pomiaru
+            if(ctype_digit($_POST['pomiar']) == false || ($_POST['pomiar'] < 50) || ($_POST['pomiar'] > 170)){
+                $walidacja = false;
+                $_SESSION['bladEdycji'] = "Wprowadź prawidłową wartość pomiaru (zakres 50-170)";
+                header("Location: index.php?operacja=602");
+            }
+
+            if($walidacja == true){
+                $szablon = $mojePolaczenie->prepare($CUKIERinsert);
+                $szablon->bind_param("dssss", $val1, $val2, $val3, $val4, $val5);
+                $val1 = $_SESSION['iduzytkownika'];
+                $val2 = $_POST['data'];
+                $val3 = $_POST['godzina'];
+                $val4 = $_POST['pomiar'];
+                $val5 = $_SESSION['zalogowany'];
+                $szablon->execute();
+                echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
+                $szablon->close();
+                echo '<a href="index.php?operacja=601">' . $btPowrot . '</a>';
+            }
         }
-        echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
-        $szablon->close();
-        echo '<a href="index.php?operacja=601">' . $btPowrot . '</a>';
         break;
 
     case 603:  //Usuwanie rekordu - cukier
@@ -174,56 +275,141 @@ switch ($kodOperacji){
     case 803:  //Dodanie rekordu - lekarz
         switch($_POST['parametr']){
             case 'tetno':
-                $szablon = $mojePolaczenie->prepare($LEK_TETNOinsert);
-                $szablon->bind_param("sssss", $val1, $val2, $val3, $val4, $val5);
-                $val1 = $_POST['pacjent'];
-                $val2 = $_POST['data'];
-                $val3 = $_POST['godzina'];
-                $val4 = $_POST['pomiar'];
-                $val5 = $_SESSION['zalogowany'];
-                $szablon->execute(); 
-                echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
-                $szablon->close();
-                echo '<a href="index.php?operacja=801">' . $btPowrot . '</a>';
+                $Lnazw = mysqli_query($mojePolaczenie, sprintf($RejestracjaSprawdzanie, $_POST['pacjent']));
+                $liczbaNazw = mysqli_fetch_array($Lnazw)[0];
+                if($liczbaNazw == 0){
+                    $walidacja = false;
+                    $_SESSION['bladEdycji'] = "Wprowadź poprawny login pacjenta";
+                    header("Location: index.php?operacja=803");
+                }
+
+
+                if(isset($_POST['data'])){
+                    //Walidacja wprowadzonych danych
+                    $walidacja = true;
+                    //Sprawdzenie godziny
+                    if((preg_match('/^((0[0-9]|1[0-9]|2[0-3])[.][0-5][0-9])/', $_POST['godzina'])) == false){
+                        $walidacja = false;
+                        $_SESSION['bladEdycji'] = "Wprowadź godzinę w formacie gg.mm";
+                        header("Location: index.php?operacja=803");
+                    }
+                    //Sprawdzenie pomiaru
+                    if(ctype_digit($_POST['pomiar']) == false || ($_POST['pomiar'] < 30) || ($_POST['pomiar'] > 200)){
+                        $walidacja = false;
+                        $_SESSION['bladEdycji'] = "Wprowadź prawidłową wartość pomiaru (zakres 30-200)";
+                        header("Location: index.php?operacja=803");
+                    }
+        
+                    if($walidacja == true){
+                        $szablon = $mojePolaczenie->prepare($LEK_TETNOinsert);
+                        $szablon->bind_param("sssss", $val1, $val2, $val3, $val4, $val5);
+                        $val1 = $_POST['pacjent'];
+                        $val2 = $_POST['data'];
+                        $val3 = $_POST['godzina'];
+                        $val4 = $_POST['pomiar'];
+                        $val5 = $_SESSION['zalogowany'];
+                        $szablon->execute(); 
+                        echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
+                        $szablon->close();
+                        echo '<a href="index.php?operacja=801">' . $btPowrot . '</a>';
+                    }
+                }
                 break;
             case 'cisnienie':
-                $szablon = $mojePolaczenie->prepare($LEK_CISNIENIEinsert);
-                $szablon->bind_param("sssss", $val1, $val2, $val3, $val4, $val5);
-                $val1 = $_POST['pacjent'];
-                $val2 = $_POST['data'];
-                $val3 = $_POST['godzina'];
-                $val4 = $_POST['pomiar'];
-                $val5 = $_SESSION['zalogowany'];
-                $szablon->execute(); 
-                echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
-                $szablon->close();
-                echo '<a href="index.php?operacja=801">' . $btPowrot . '</a>';
-                break;
+                if(isset($_POST['data'])){
+                    //Walidacja wprowadzonych danych
+                    $walidacja = true;
+                    //Sprawdzenie godziny
+                    if((preg_match('/^((0[0-9]|1[0-9]|2[0-3])[.][0-5][0-9])/', $_POST['godzina'])) == false){
+                        $walidacja = false;
+                        $_SESSION['bladEdycji'] = "Wprowadź godzinę w formacie gg.mm";
+                        header("Location: index.php?operacja=803");
+                    }
+                    //Sprawdzenie pomiaru
+                    if((preg_match('/^(([8-9][0-9]|1[0-4][0-9])\/[4-9][0-9]|1[0-1][0-9])/', $_POST['pomiar'])) == false){
+                        $walidacja = false;
+                        $_SESSION['bladEdycji'] = "Wprowadź prawidłową wartość pomiaru: skurczowe/rozkurczowe (zakres skurczowe 80-149, a rozkurczowe 40-119)";
+                        header("Location: index.php?operacja=803");
+                    }
+        
+                    if($walidacja == true){
+                        $szablon = $mojePolaczenie->prepare($LEK_CISNIENIEinsert);
+                        $szablon->bind_param("sssss", $val1, $val2, $val3, $val4, $val5);
+                        $val1 = $_POST['pacjent'];
+                        $val2 = $_POST['data'];
+                        $val3 = $_POST['godzina'];
+                        $val4 = $_POST['pomiar'];
+                        $val5 = $_SESSION['zalogowany'];
+                        $szablon->execute(); 
+                        echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
+                        $szablon->close();
+                        echo '<a href="index.php?operacja=801">' . $btPowrot . '</a>';
+                    }
+                }
+                    break;
             case 'saturacja':
-                $szablon = $mojePolaczenie->prepare($LEK_SATURACJAinsert);
-                $szablon->bind_param("sssss", $val1, $val2, $val3, $val4, $val5);
-                $val1 = $_POST['pacjent'];
-                $val2 = $_POST['data'];
-                $val3 = $_POST['godzina'];
-                $val4 = $_POST['pomiar'];
-                $val5 = $_SESSION['zalogowany'];
-                $szablon->execute(); 
-                echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
-                $szablon->close();
-                echo '<a href="index.php?operacja=801">' . $btPowrot . '</a>';
+                if(isset($_POST['data'])){
+                    //Walidacja wprowadzonych danych
+                    $walidacja = true;
+                    //Sprawdzenie godziny
+                    if((preg_match('/^((0[0-9]|1[0-9]|2[0-3])[.][0-5][0-9])/', $_POST['godzina'])) == false){
+                        $walidacja = false;
+                        $_SESSION['bladEdycji'] = "Wprowadź godzinę w formacie gg.mm";
+                        header("Location: index.php?operacja=803");
+                    }
+                    //Sprawdzenie pomiaru
+                    if(ctype_digit($_POST['pomiar']) == false || ($_POST['pomiar'] < 10) || ($_POST['pomiar'] > 100)){
+                        $walidacja = false;
+                        $_SESSION['bladEdycji'] = "Wprowadź prawidłową wartość pomiaru (zakres 10-100)";
+                        header("Location: index.php?operacja=803");
+                    }
+        
+                    if($walidacja == true){
+                        $szablon = $mojePolaczenie->prepare($LEK_SATURACJAinsert);
+                        $szablon->bind_param("sssss", $val1, $val2, $val3, $val4, $val5);
+                        $val1 = $_POST['pacjent'];
+                        $val2 = $_POST['data'];
+                        $val3 = $_POST['godzina'];
+                        $val4 = $_POST['pomiar'];
+                        $val5 = $_SESSION['zalogowany'];
+                        $szablon->execute(); 
+                        echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
+                        $szablon->close();
+                        echo '<a href="index.php?operacja=801">' . $btPowrot . '</a>';
+                    }
+                }
                 break;
             case 'cukier':
-                $szablon = $mojePolaczenie->prepare($LEK_CUKIERinsert);
-                $szablon->bind_param("sssss", $val1, $val2, $val3, $val4, $val5);
-                $val1 = $_POST['pacjent'];
-                $val2 = $_POST['data'];
-                $val3 = $_POST['godzina'];
-                $val4 = $_POST['pomiar'];
-                $val5 = $_SESSION['zalogowany'];
-                $szablon->execute(); 
-                echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
-                $szablon->close();
-                echo '<a href="index.php?operacja=801">' . $btPowrot . '</a>';
+                if(isset($_POST['data'])){
+                    //Walidacja wprowadzonych danych
+                    $walidacja = true;
+                    //Sprawdzenie godziny
+                    if((preg_match('/^((0[0-9]|1[0-9]|2[0-3])[.][0-5][0-9])/', $_POST['godzina'])) == false){
+                        $walidacja = false;
+                        $_SESSION['bladEdycji'] = "Wprowadź godzinę w formacie gg.mm";
+                        header("Location: index.php?operacja=803");
+                    }
+                    //Sprawdzenie pomiaru
+                    if(ctype_digit($_POST['pomiar']) == false || ($_POST['pomiar'] < 50) || ($_POST['pomiar'] > 170)){
+                        $walidacja = false;
+                        $_SESSION['bladEdycji'] = "Wprowadź prawidłową wartość pomiaru (zakres 50-170)";
+                        header("Location: index.php?operacja=803");
+                    }
+        
+                    if($walidacja == true){
+                        $szablon = $mojePolaczenie->prepare($LEK_CUKIERinsert);
+                        $szablon->bind_param("sssss", $val1, $val2, $val3, $val4, $val5);
+                        $val1 = $_POST['pacjent'];
+                        $val2 = $_POST['data'];
+                        $val3 = $_POST['godzina'];
+                        $val4 = $_POST['pomiar'];
+                        $val5 = $_SESSION['zalogowany'];
+                        $szablon->execute(); 
+                        echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
+                        $szablon->close();
+                        echo '<a href="index.php?operacja=801">' . $btPowrot . '</a>';
+                    }
+                }
                 break;
         }
         break;

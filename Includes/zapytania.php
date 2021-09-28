@@ -1,12 +1,12 @@
 <?php
 //LOGOWANIE I REJESTRACJA
 $Logowanie = "SELECT * FROM uzytkownicy WHERE NazwaUzytkownika = '%s'";
-$Rejestracja = "INSERT INTO uzytkownicy (NazwaUzytkownika, Mail, Haslo, Rola, ImieNazwisko, Adres, Miejscowosc) VALUES (?, ?, ?, ?, ?, ?, ?)";
+$Rejestracja = "INSERT INTO uzytkownicy (NazwaUzytkownika, Mail, Haslo, Rola) VALUES (?, ?, ?, ?)";
 $RejestracjaSprawdzanie = "SELECT COUNT(*) FROM uzytkownicy WHERE NazwaUzytkownika = '%s'";
 
 //KONTO
 $KONTOselect = "SELECT * FROM uzytkownicy WHERE iduzytkownika = %d";
-$KONTOupdate = "UPDATE uzytkownicy SET NazwaUzytkownika = ?, ImieNazwisko = ?, Adres = ?, Miejscowosc = ?, Mail = ?, Haslo = ? WHERE iduzytkownika = ?";
+$KONTOupdate = "UPDATE uzytkownicy SET NazwaUzytkownika = ?, Mail = ?, Haslo = ? WHERE iduzytkownika = ?";
 $KONTOdelete = "DELETE FROM uzytkownicy WHERE iduzytkownika = ?";
 $KONTOidnazwa = "SELECT iduzytkownika FROM uzytkownicy WHERE NazwaUzytkownika = '%s'";
 
@@ -69,5 +69,5 @@ $LEK_SATURACJAinsert = "INSERT INTO saturacja (iduzytkownika, DataPomiaru, Godzi
 $LEK_CUKIERinsert = "INSERT INTO cukier (iduzytkownika, DataPomiaru, Godzina, Pomiar, Wprowadzil) VALUES ((SELECT uzytkownicy.iduzytkownika FROM uzytkownicy WHERE NazwaUzytkownika = ?), ?, ?, ?, ?)";
 
 //LEKARZ - Wyszukiwanie pacjenta
-$PACJENTselect = "SELECT * FROM uzytkownicy WHERE NazwaUzytkownika = '%s' OR ImieNazwisko = '%s'";
+$PACJENTselect = "SELECT * FROM uzytkownicy WHERE NazwaUzytkownika = '%s'";
 ?>

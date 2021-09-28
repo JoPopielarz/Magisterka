@@ -27,6 +27,12 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
   elseif($RolaUzytkownika == "lekarz")
     include "Includes/menuLekarz.php";
   
+  if(isset($_SESSION['bladEdycji'])){
+    echo '<div class="alert alert-danger" role="alert">';
+        echo $_SESSION['bladEdycji'];
+    echo '</div>';
+    unset($_SESSION['bladEdycji']);
+  }
   echo "<br>";
 
   if(isset($_GET['operacja']))
@@ -44,9 +50,8 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
       if($wynik = zapytanieDoBazy($mojePolaczenie, sprintf($KONTOselect, $iduzytkownika))){
         include "Includes/naglTabKonto.php";
         while($wiersz = $wynik->fetch_assoc()){
-          printf("<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
-                $wiersz['iduzytkownika'], $wiersz['NazwaUzytkownika'], $wiersz['ImieNazwisko'], $wiersz['Adres'], 
-                $wiersz['Miejscowosc'], $wiersz['Mail'], $wiersz['Rola']);
+          printf("<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td></tr>",
+                $wiersz['iduzytkownika'], $wiersz['NazwaUzytkownika'], $wiersz['Mail'], $wiersz['Rola']);
         }
         echo "</tbody></table>";
         $mojePolaczenie->close();
@@ -58,9 +63,8 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
       if($wynik = zapytanieDoBazy($mojePolaczenie, sprintf($KONTOselect, $iduzytkownika))){
         include "Includes/naglTabKonto.php";
         $wiersz = $wynik->fetch_assoc();
-        printf("<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
-                $wiersz['iduzytkownika'], $wiersz['NazwaUzytkownika'], $wiersz['ImieNazwisko'], $wiersz['Adres'], 
-                $wiersz['Miejscowosc'], $wiersz['Mail'], $wiersz['Rola']);
+        printf("<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td></tr>",
+                $wiersz['iduzytkownika'], $wiersz['NazwaUzytkownika'], $wiersz['Mail'], $wiersz['Rola']);
         echo "</tbody></table>";
         include "forms/frmEdytujKonto.php";
         $mojePolaczenie->close();
@@ -72,9 +76,8 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
       if($wynik = zapytanieDoBazy($mojePolaczenie, sprintf($KONTOselect, $iduzytkownika))){
         include "Includes/naglTabKonto.php";
         $wiersz = $wynik->fetch_assoc();
-        printf("<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
-                $wiersz['iduzytkownika'], $wiersz['NazwaUzytkownika'], $wiersz['ImieNazwisko'], $wiersz['Adres'], 
-                $wiersz['Miejscowosc'], $wiersz['Mail'], $wiersz['Rola']);
+        printf("<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td></tr>",
+                $wiersz['iduzytkownika'], $wiersz['NazwaUzytkownika'], $wiersz['Mail'], $wiersz['Rola']);
         echo "</tbody></table>";
         echo "<h4 style=\"text-align: center\">Czy na pewno chcesz usunąć swoje konto?</h4>";
         echo '<button style="margin-left: 50%"><a href="operacjeDB.php?kodOperacji=204">' . $btUsun . '</a></button>';
@@ -925,13 +928,12 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
       break;
 
     case 8051:
-      if(($_POST['uzytkownik'] != '') || ($_POST['imie'] != '')){
-        if($wynik = zapytanieDoBazy($mojePolaczenie, sprintf($PACJENTselect, $_POST['uzytkownik'], $_POST['imie']))){
+      if($_POST['uzytkownik'] != ''){
+        if($wynik = zapytanieDoBazy($mojePolaczenie, sprintf($PACJENTselect, $_POST['uzytkownik']))){
           include "Includes/naglTabKonto.php";
           while($wiersz = $wynik->fetch_assoc()){
-            printf("<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
-                  $wiersz['iduzytkownika'], $wiersz['NazwaUzytkownika'], $wiersz['ImieNazwisko'], $wiersz['Adres'], 
-                  $wiersz['Miejscowosc'], $wiersz['Mail'], $wiersz['Rola']);
+            printf("<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td></tr>",
+                  $wiersz['iduzytkownika'], $wiersz['NazwaUzytkownika'], $wiersz['Mail'], $wiersz['Rola']);
           }
           echo "</tbody></table>";
           $mojePolaczenie->close();
@@ -948,7 +950,8 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
       break;
 
     default:
-      echo "<h3 style=\"text-align: center\">Witaj, co chcesz dzisiaj zrobić?</h3>";
+      echo "<h3 style=\"text-align: center\">Witaj, co chcesz dzisiaj zrobić?<br></h3><br>";
+      include "Documentation/informacjeOgólne.php";
   }
 }
        
