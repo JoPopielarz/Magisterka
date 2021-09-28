@@ -13,6 +13,7 @@ include "Includes/zapytania.php";
     <h2 style="text-align: center"><?php echo $txtNazwaProjektu; ?></h2>
 </div>
 
+<div class="container">
 <?php
 if(($mojePolaczenie = polaczenie()) == NULL){
     header("Location: ./");
@@ -417,6 +418,11 @@ switch ($kodOperacji){
     default:
         header("Location: ./");
 }
-
-include "Includes/stopka.php";
 ?>
+</div>
+
+<div class="container">
+  <?php
+    include "Includes/stopka.php";
+  ?>
+</div>

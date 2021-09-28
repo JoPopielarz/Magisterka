@@ -60,19 +60,15 @@ $btPowrot = "POWRÓT";
 $btMojeKonto = "MOJE KONTO";
 
 //Formularz - Edycja konta
-$lblUzytkownikFrmEK = "Nazwa użytkownika:";
-$lblMailFrmEK = "Mail:";
-$lblHasloFrmEK = "Hasło:";
-$lblHaslo2FrmEK = "Powtórz hasło:";
+$plhUzytkownikFrmEK = "Nazwa użytkownika";
+$plhMailFrmEK = "E-mail";
+$plhHasloFrmEK = "Hasło";
+$plhHaslo2FrmEK = "Powtórz hasło";
 
 //Formularze parametrów - pacjent
-$lblDataDP = "Wprowadź datę (RRR-MM-DD):";
-$lblGodzinaDP = "Wprowadź godzinę:";
-$lblPomiarDP = "Wprowadź pomiar:";
-$lblWprowadzilDP = "Nazwa użytkownika wprowadzającego rekord:";
-$plhDataDP = "data";
-$plhGodzinaDP = "godzina";
-$plhPomiarDP = "pomiar";
+$plhDataDP = "Data pomiaru";
+$plhGodzinaDP = "Godzina";
+$plhPomiarDP = "Wynik pomiaru";
 $plhWprowadzilDP = "wprowadził";
 
 //Formularze - lekarz
@@ -80,7 +76,7 @@ $lblPacjentWP = "Login pacjenta:";
 $lblDataPoczWP = "Wyświetl pomiary od:";
 $lblParametrWD = "Parametr:";
 $lblPomiarWD = "Minimalna wartość pomiaru:";
-$plhPacjentWP = "pacjent";
+$plhPacjentWP = "Login pacjenta";
 $plhDataPoczWP = "data";
 $plhParametrWD = "parametr";
 

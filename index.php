@@ -5,14 +5,13 @@
     include "Includes/zapytania.php";
 ?>
 
-<div class="container">
-    <h2 style="text-align: center"><?php echo $txtNazwaProjektu; ?></h2>
+<div class="header" style="width: 100%; margin-top: 20px; margin-bottom: 20px;">
+    <h2 style="text-align: center;"><?php echo $txtNazwaProjektu; ?></h2><br>
 </div>
 
 <div class="container">
 <?php
 if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POST['operacja']))){
-  echo "<h3>Dzień dobry!</h3>";
   include "Login.php";
 }else{
   if(($mojePolaczenie = polaczenie()) == NULL){
@@ -21,12 +20,17 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
   $nazwaUzytkownika = $_SESSION['zalogowany'];
   $iduzytkownika = $_SESSION['iduzytkownika'];
   $RolaUzytkownika = $_SESSION['rola'];
+?>
+  <div class="nav">
+    <?php
+    if($RolaUzytkownika == "pacjent")
+      include "Includes/menuPacjent.php";
+    elseif($RolaUzytkownika == "lekarz")
+      include "Includes/menuLekarz.php";
+    ?>
+  </div>
 
-  if($RolaUzytkownika == "pacjent")
-    include "Includes/menuPacjent.php";
-  elseif($RolaUzytkownika == "lekarz")
-    include "Includes/menuLekarz.php";
-  
+<?php
   if(isset($_SESSION['bladEdycji'])){
     echo '<div class="alert alert-danger" role="alert">';
         echo $_SESSION['bladEdycji'];
@@ -80,7 +84,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
                 $wiersz['iduzytkownika'], $wiersz['NazwaUzytkownika'], $wiersz['Mail'], $wiersz['Rola']);
         echo "</tbody></table>";
         echo "<h4 style=\"text-align: center\">Czy na pewno chcesz usunąć swoje konto?</h4>";
-        echo '<button style="margin-left: 50%"><a href="operacjeDB.php?kodOperacji=204">' . $btUsun . '</a></button>';
+        echo '<button id="surebut" style="margin-left: 45%;"><a href="operacjeDB.php?kodOperacji=204" style="color: white;">' . $btUsun . '</a></button>';
         $mojePolaczenie->close();
       }else
         echo $txtBladZapytania;
@@ -88,7 +92,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
 
     case 301:  //Wyświetlanie danych - tętno
       echo "Norma tętna: " . $txtTetnoNorma . "<br>";
-      echo '<button class="btn" type="button" id="Wyszukaj" style="margin-left: 90%"><a href="index.php?operacja=3011">' . $btFrmWyszukaj . '</a></button>';
+      echo '<button class="btn" type="button" id="Wyszukaj"><a href="index.php?operacja=3011" style="color: white;">' . $btFrmWyszukaj . '</a></button>';
       if(!isset($_GET['offset']) && !isset($_POST['offset']))
         $offset = 0;
       if(isset($_GET['offset']))
@@ -111,7 +115,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
           <form action="index.php" method="get">
             <input type="hidden" name="operacja" value="301">
             <input type="hidden" name="offset" value="<?php echo ($offset - 30); ?>">
-            <input type="submit" value="Poprzednie">
+            <input type="submit" id="navbut" value="Poprzednie">
           </form>
           <?php
         }
@@ -123,7 +127,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
           <form action="index.php" method="get">
             <input type="hidden" name="operacja" value="301">
             <input type="hidden" name="offset" value="<?php echo ($offset + 30); ?>">
-            <input type="submit" value="Następne">
+            <input type="submit" id="navbut" value="Następne">
           </form>
           <?php
         }
@@ -200,7 +204,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
           <form action="index.php" method="get">
             <input type="hidden" name="operacja" value="303">
             <input type="hidden" name="offset" value="<?php echo ($offset - 30); ?>">
-            <input type="submit" value="Poprzednie">
+            <input type="submit" id="navbut" value="Poprzednie">
           </form>
           <?php
         }
@@ -212,7 +216,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
           <form action="index.php" mathod="get">
             <input type="hidden" name="operacja" value="303">
             <input type="hidden" name="offset" value="<?php echo ($offset + 30); ?>">
-            <input type="submit" value="Następne">
+            <input type="submit" id="navbut" value="Następne">
           </form>
           <?php
         }
@@ -224,7 +228,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
 
     case 401:  //Wyświetlanie danych - ciśnienie
       echo "Norma ciśnienia: " . $txtCisnienieNorma . "<br>";
-      echo '<button class="btn" type="button" id="Wyszukaj" style="margin-left: 90%"><a href="index.php?operacja=4011">' . $btFrmWyszukaj . '</a></button>';
+      echo '<button class="btn" type="button" id="Wyszukaj"><a href="index.php?operacja=4011" style="color: white;">' . $btFrmWyszukaj . '</a></button>';
       if(!isset($_GET['offset']) && !isset($_POST['offset']))
         $offset = 0;
       if(isset($_GET['offset']))
@@ -247,7 +251,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
           <form action="index.php" method="get">
             <input type="hidden" name="operacja" value="401">
             <input type="hidden" name="offset" value="<?php echo ($offset - 30); ?>">
-            <input type="submit" value="Poprzednie">
+            <input type="submit" id="navbut" value="Poprzednie">
           </form>
           <?php
         }
@@ -259,7 +263,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
           <form action="index.php" method="get">
             <input type="hidden" name="operacja" value="401">
             <input type="hidden" name="offset" value="<?php echo ($offset + 30); ?>">
-            <input type="submit" value="Następne">
+            <input type="submit" id="navbut" value="Następne">
           </form>
           <?php
         }
@@ -337,7 +341,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
           <form action="index.php" method="get">
             <input type="hidden" name="operacja" value="403">
             <input type="hidden" name="offset" value="<?php echo ($offset - 30); ?>">
-            <input type="submit" value="Poprzednie">
+            <input type="submit" id="navbut" value="Poprzednie">
           </form>
           <?php
         }
@@ -349,7 +353,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
           <form action="index.php" mathod="get">
             <input type="hidden" name="operacja" value="403">
             <input type="hidden" name="offset" value="<?php echo ($offset + 30); ?>">
-            <input type="submit" value="Następne">
+            <input type="submit" id="navbut" value="Następne">
           </form>
           <?php
         }
@@ -361,7 +365,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
 
     case 501:  //Wyświetlanie danych - saturacja
       echo "Norma saturacji: " . $txtSaturacjaNorma . "<br>";
-      echo '<button class="btn" type="button" id="Wyszukaj" style="margin-left: 90%"><a href="index.php?operacja=5011">' . $btFrmWyszukaj . '</a></button>';
+      echo '<button class="btn" type="button" id="Wyszukaj"><a href="index.php?operacja=5011" style="color: white;">' . $btFrmWyszukaj . '</a></button>';
       if(!isset($_GET['offset']) && !isset($_POST['offset']))
         $offset = 0;
       if(isset($_GET['offset']))
@@ -384,7 +388,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
           <form action="index.php" method="get">
             <input type="hidden" name="operacja" value="501">
             <input type="hidden" name="offset" value="<?php echo ($offset - 30); ?>">
-            <input type="submit" value="Poprzednie">
+            <input type="submit" id="navbut" value="Poprzednie">
           </form>
           <?php
         }
@@ -396,7 +400,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
           <form action="index.php" method="get">
             <input type="hidden" name="operacja" value="501">
             <input type="hidden" name="offset" value="<?php echo ($offset + 30); ?>">
-            <input type="submit" value="Następne">
+            <input type="submit" id="navbut" value="Następne">
           </form>
           <?php
         }
@@ -475,7 +479,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
           <form action="index.php" method="get">
             <input type="hidden" name="operacja" value="503">
             <input type="hidden" name="offset" value="<?php echo ($offset - 30); ?>">
-            <input type="submit" value="Poprzednie">
+            <input type="submit" id="navbut" value="Poprzednie">
           </form>
           <?php
         }
@@ -487,7 +491,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
           <form action="index.php" mathod="get">
             <input type="hidden" name="operacja" value="503">
             <input type="hidden" name="offset" value="<?php echo ($offset + 30); ?>">
-            <input type="submit" value="Następne">
+            <input type="submit" id="navbut" value="Następne">
           </form>
           <?php
         }
@@ -499,7 +503,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
 
     case 601:  //Wyświetlanie danych - cukier
       echo "Norma poziomu cukru: " . $txtCukierNorma . "<br>";
-      echo '<button class="btn" type="button" id="Wyszukaj" style="margin-left: 90%"><a href="index.php?operacja=6011">' . $btFrmWyszukaj . '</a></button>';
+      echo '<button class="btn" type="button" id="Wyszukaj"><a href="index.php?operacja=6011" style="color: white;">' . $btFrmWyszukaj . '</a></button>';
       if(!isset($_GET['offset']) && !isset($_POST['offset']))
         $offset = 0;
       if(isset($_GET['offset']))
@@ -522,7 +526,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
           <form action="index.php" method="get">
             <input type="hidden" name="operacja" value="601">
             <input type="hidden" name="offset" value="<?php echo ($offset - 30); ?>">
-            <input type="submit" value="Poprzednie">
+            <input type="submit" id="navbut" value="Poprzednie">
           </form>
           <?php
         }
@@ -534,7 +538,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
           <form action="index.php" method="get">
             <input type="hidden" name="operacja" value="601">
             <input type="hidden" name="offset" value="<?php echo ($offset + 30); ?>">
-            <input type="submit" value="Następne">
+            <input type="submit" id="navbut" value="Następne">
           </form>
           <?php
         }
@@ -613,7 +617,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
           <form action="index.php" method="get">
             <input type="hidden" name="operacja" value="603">
             <input type="hidden" name="offset" value="<?php echo ($offset - 30); ?>">
-            <input type="submit" value="Poprzednie">
+            <input type="submit" id="navbut" value="Poprzednie">
           </form>
           <?php
         }
@@ -625,7 +629,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
           <form action="index.php" mathod="get">
             <input type="hidden" name="operacja" value="603">
             <input type="hidden" name="offset" value="<?php echo ($offset + 30); ?>">
-            <input type="submit" value="Następne">
+            <input type="submit" id="navbut" value="Następne">
           </form>
           <?php
         }
@@ -640,7 +644,6 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
       break;
   
     case 801:  //Wyświetlanie pomiarów pacjenta
-      echo "<h4>Wprowadź dane pacjenta:</h4>";
       include "forms/frmWyswPacjenta.php";
       break;
     case 8011:
@@ -670,7 +673,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
               <input type="hidden" name="odkiedy" value="<?php echo $_POST['odkiedy']; ?>">
               <input type="hidden" name="operacja" value="8011">
               <input type="hidden" name="offset" value="<?php echo ($offset - 30); ?>">
-              <input type="submit" value="Poprzednie">
+              <input type="submit" id="navbut" value="Poprzednie">
             </form>
             <?php
           }
@@ -691,7 +694,7 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
               <input type="hidden" name="odkiedy" value="<?php echo $_POST['odkiedy']; ?>">
               <input type="hidden" name="operacja" value="8011">
               <input type="hidden" name="offset" value="<?php echo ($offset + 30); ?>">
-              <input type="submit" value="Następne">
+              <input type="submit" id="navbut" value="Następne">
             </form>
             <?php
           }
@@ -957,7 +960,9 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
        
 ?>
 </div>
+
 <div class="container">
-<?php
+  <?php
     include "Includes/stopka.php";
-?>
+  ?>
+</div>

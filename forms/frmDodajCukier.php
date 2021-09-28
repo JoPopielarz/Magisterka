@@ -1,9 +1,7 @@
 <form action="operacjeDB.php" method="post">
-    <?php echo $lblDataDP; ?>
-    <input type="date" name="data" placeholder="<?php echo $plhDataDP; ?>" required><br>
-    <?php echo $lblGodzinaDP; ?>
+    <h4>Nowy pomiar poziomu cukru:</h4>
+    <input type="date" name="data" required><br>
     <input type="text" name="godzina" placeholder="<?php echo $plhGodzinaDP; ?>" required><br>
-    <?php echo $lblPomiarDP; ?>
     <input type="text" name="pomiar" placeholder="<?php echo $plhPomiarDP; ?>" required><br>
     <input type="hidden" name="kodOperacji" value="602"><br>
     <input type="submit" value="<?php echo $btFrmZapisz; ?>">

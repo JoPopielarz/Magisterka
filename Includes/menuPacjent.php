@@ -57,12 +57,12 @@
         </div>
     </div>
     <div class="btn-group">
-        <button class="btn btn-secondary" type="button" id="Dokumentacja" aria-haspopup="true" aria-expanded="false">
-            <a href="index.php?operacja=701"><?php echo $mn_Dokumentacja; ?></a></button>
+        <button class="btn btn-secondary" type="button" id="Dokumentacja" aria-haspopup="true" aria-expanded="false" style="background-color: #ededed; border-color: #ededed;">
+            <a style="color: black;" href="index.php?operacja=701"><?php echo $mn_Dokumentacja; ?></a></button>
     </div>
     <div class="btn-group">
-        <button class="btn btn-secondary" type="button" id="StronaGlowna" aria-haspopup="true" aria-expanded="false">
-            <a href="index.php?operacja=default"><?php echo $mn_StrGlowna; ?></a></button>
+        <button class="btn btn-secondary" type="button" id="StronaGlowna" aria-haspopup="true" aria-expanded="false" style="background-color: #ededed; border-color: #ededed;">
+            <a style="color: black;" href="index.php?operacja=default"><?php echo $mn_StrGlowna; ?></a></button>
     </div>
     <hr>
 </div>

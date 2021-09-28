@@ -27,22 +27,22 @@
 
   switch($akcja){
     default:
-      echo '<h4>' . $napLogowanie . '</h4><br>';
       ?>
-      <form action="ObslugaLogowania.php" method="post">
-        <?php echo $NapNazwa; ?><br><input type="text" name="nazwa" placeholder="<?php echo $plhNazwa; ?>" required><br>
-        <?php echo $NapHaslo; ?><br><input type="password" name="haslo" required><br>
-        <br>
-        <input type="submit" value="<?php echo $btZaloguj; ?>">
-      </form>
+      <div class="logowanie">
+        <?php echo '<h4>' . $napLogowanie . '</h4><br>'; ?>
+        <form action="ObslugaLogowania.php" method="post">
+          <?php echo $NapNazwa; ?><br><input type="text" name="nazwa" placeholder="<?php echo $plhNazwa; ?>" required>
+          <?php echo $NapHaslo; ?><br><input type="password" name="haslo" required>
+          <input type="submit" value="<?php echo $btZaloguj; ?>">
+        </form>
+      </div>
       <br>
       <br>
-      <a href="index.php?akcja=rejestracja"><h4><?php echo $napBrakKonta; ?></h4></a>
+      <a href="index.php?akcja=rejestracja"><h4 style="text-align: center;"><?php echo $napBrakKonta; ?></h4></a>
       <?php
       break;
     
     case 'rejestracja':
-      echo '<h4>' . $napRejestracja . '</h4><br>';
       include "forms/frmRejestracja.php";
   }
 ?>
