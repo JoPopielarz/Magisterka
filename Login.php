@@ -11,6 +11,12 @@
       echo '</div>';
       session_unset();
   }
+  if(isset($_SESSION['Zarejestrowano'])){
+    echo '<div class="alert alert-success" role="alert">';
+      echo $_SESSION['Zarejestrowano'];
+    echo '<br></div>';
+    session_unset();
+}
 
   if(isset($_SESSION['zalogowany'])){
       echo '<div class="alert alert-success" role="alert">';

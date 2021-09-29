@@ -55,7 +55,7 @@ if(isset($_POST['nazwa'])){
     //Hashowanie hasła
     $hasloHash = password_hash($_POST['haslo'], PASSWORD_DEFAULT);
     //Sprawdzenie reCAPTCHA
-    $key = "6LcWdY4cAAAAAMsZj2Tu_4l2z2a_5S_iRXsxz1Ze";
+    $key = "Tajny klucz reCAPTCHA";
     $sprawdzanie = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$key.'&response='.$_POST['g-recaptcha-response']);
     $odpowiedz = json_decode($sprawdzanie);
     if($odpowiedz->success==false){
@@ -73,9 +73,9 @@ if(isset($_POST['nazwa'])){
         $arg3 = $hasloHash;
         $arg4 = $_POST['rola'];
         $szablon->execute();
-        echo "<h4><br>Dodano użytkownika: " . $_POST['nazwa'] . "<br>Mail: " . $_POST['mail'] . "</h4><br>";
+        $_SESSION['Zarejestrowano'] = "Dodano użytkownika: " . $_POST['nazwa'];
+        header("Location: index.php?akcja=logowanie");
         $szablon->close();
-        echo '<button><a href="index.php">' . $btPowrot . '</a></button>';
 
         //Wysyłanie maila powitalnego
         include "Includes/welcomeMail.php";
