@@ -20,22 +20,29 @@ if(!isset($_SESSION['zalogowany']) && (!isset($_GET['operacja']) || !isset($_POS
   $nazwaUzytkownika = $_SESSION['zalogowany'];
   $iduzytkownika = $_SESSION['iduzytkownika'];
   $RolaUzytkownika = $_SESSION['rola'];
-?>
-  <div class="nav">
-    <?php
-    if($RolaUzytkownika == "pacjent")
-      include "Includes/menuPacjent.php";
-    elseif($RolaUzytkownika == "lekarz")
-      include "Includes/menuLekarz.php";
-    ?>
-  </div>
 
-<?php
+  if($RolaUzytkownika == "pacjent")
+    include "Includes/menuPacjent.php";
+  elseif($RolaUzytkownika == "lekarz")
+    include "Includes/menuLekarz.php";
+
   if(isset($_SESSION['bladEdycji'])){
     echo '<div class="alert alert-danger" role="alert">';
-        echo $_SESSION['bladEdycji'];
+      echo $_SESSION['bladEdycji'];
     echo '</div>';
     unset($_SESSION['bladEdycji']);
+  }
+  if(isset($_SESSION['Dodano'])){
+    echo '<div class="alert alert-success" role="alert">';
+      echo $_SESSION['Dodano'];
+    echo '</div>';
+    unset($_SESSION['Dodano']);
+  }
+  if(isset($_SESSION['UsunietoRekord'])){
+    echo '<div class="alert alert-danger" role="alert">';
+      echo $_SESSION['UsunietoRekord'];
+    echo '</div>';
+    unset($_SESSION['UsunietoRekord']);
   }
   echo "<br>";
 

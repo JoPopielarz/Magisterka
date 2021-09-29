@@ -1,5 +1,6 @@
 <?php
 session_start();
+ob_start();
 //Sprawdzenie czy użytkownik jest zalogowany
 if(!isset($_SESSION['zalogowany']))
     header("Location: ./");
@@ -19,10 +20,10 @@ if(($mojePolaczenie = polaczenie()) == NULL){
     header("Location: ./");
 }
 
-if($_SESSION['rola'] == "pacjent")
-    include "Includes/menuPacjent.php";
-else
+if($_SESSION['rola'] == "lekarz")
     include "Includes/menuLekarz.php";
+else
+    include "Includes/menuPacjent.php";
 
 if(!isset($_POST['kodOperacji']) && !isset($_GET['kodOperacji']))
     header("Location: ./");
@@ -94,13 +95,13 @@ switch ($kodOperacji){
         $szablon->bind_param("d", $val1);
         $val1 = $_SESSION['iduzytkownika'];
         $szablon->execute();
-        echo "Usunięto użytkownika " . $_SESSION['zalogowany'] . "<br>";
+        $usuniety = $_SESSION['zalogowany'];
         $szablon->close();
         if(isset($_SESSION)){
-            session_destroy();
-            $_SESSION = array();
+            session_unset();
         }
-        echo '<a href="index.php">' . $btPowrot . '</a>';
+        $_SESSION['Usunieto'] = "Usunięto użytkownika " . $usuniety;
+        header("Location: index.php?akcja=logowanie");
         break;
     case 302:  //Dodanie rekordu - tetno
         if(isset($_POST['data'])){
@@ -128,9 +129,9 @@ switch ($kodOperacji){
                 $val4 = $_POST['pomiar'];
                 $val5 = $_SESSION['zalogowany'];
                 $szablon->execute();
-                echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
+                $_SESSION['Dodano'] = "Dodano nowy rekord";
+                header("Location: index.php?operacja=301");
                 $szablon->close();
-                echo '<a href="index.php?operacja=301">' . $btPowrot . '</a>';
             }
         }
         break;
@@ -139,9 +140,9 @@ switch ($kodOperacji){
         $szablon->bind_param("d", $val1);
         $val1 = $_GET['id'];
         $szablon->execute();
-        echo "Usunięto " . $mojePolaczenie->affected_rows . " rekord[y ów]<br>";
+        $_SESSION['UsunietoRekord'] = "Usunięto pomiar tętna";
         $szablon->close();
-        echo '<a href="index.php?operacja=default">' . $btPowrot . '</a>';
+        header("Location: index.php");
         break;
 
     case 402:  //Dodanie rekordu - ciśnienie
@@ -170,9 +171,9 @@ switch ($kodOperacji){
                 $val4 = $_POST['pomiar'];
                 $val5 = $_SESSION['zalogowany'];
                 $szablon->execute();
-                echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
+                $_SESSION['Dodano'] = "Dodano nowy rekord";
+                header("Location: index.php?operacja=401");
                 $szablon->close();
-                echo '<a href="index.php?operacja=401">' . $btPowrot . '</a>';
             }
         }
         break;
@@ -182,9 +183,9 @@ switch ($kodOperacji){
         $szablon->bind_param("d", $val1);
         $val1 = $_GET['id'];
         $szablon->execute();
-        echo "Usunięto " . $mojePolaczenie->affected_rows . " rekord[y ów]<br>";
+        $_SESSION['UsunietoRekord'] = "Usunięto pomiar ciśnienia";
         $szablon->close();
-        echo '<a href="index.php?operacja=default">' . $btPowrot . '</a>';
+        header("Location: index.php");
         break;
 
     case 502:  //Dodanie rekordu - saturacja
@@ -213,9 +214,9 @@ switch ($kodOperacji){
                 $val4 = $_POST['pomiar'];
                 $val5 = $_SESSION['zalogowany'];
                 $szablon->execute();
-                echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
+                $_SESSION['Dodano'] = "Dodano nowy rekord";
+                header("Location: index.php?operacja=501");
                 $szablon->close();
-                echo '<a href="index.php?operacja=501">' . $btPowrot . '</a>';
             }
         }
         break;
@@ -225,9 +226,9 @@ switch ($kodOperacji){
         $szablon->bind_param("d", $val1);
         $val1 = $_GET['id'];
         $szablon->execute();
-        echo "Usunięto " . $mojePolaczenie->affected_rows . " rekord[y ów]<br>";
+        $_SESSION['UsunietoRekord'] = "Usunięto pomiar saturacji";
         $szablon->close();
-        echo '<a href="index.php?operacja=default">' . $btPowrot . '</a>';
+        header("Location: index.php");
         break;
 
     case 602:  //Dodanie rekordu - cukier
@@ -256,9 +257,9 @@ switch ($kodOperacji){
                 $val4 = $_POST['pomiar'];
                 $val5 = $_SESSION['zalogowany'];
                 $szablon->execute();
-                echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
+                $_SESSION['Dodano'] = "Dodano nowy rekord";
+                header("Location: index.php?operacja=601");
                 $szablon->close();
-                echo '<a href="index.php?operacja=601">' . $btPowrot . '</a>';
             }
         }
         break;
@@ -268,9 +269,9 @@ switch ($kodOperacji){
         $szablon->bind_param("d", $val1);
         $val1 = $_GET['id'];
         $szablon->execute();
-        echo "Usunięto " . $mojePolaczenie->affected_rows . " rekord[y ów]<br>";
+        $_SESSION['UsunietoRekord'] = "Usunięto pomiar poziomu cukru";
         $szablon->close();
-        echo '<a href="index.php?operacja=default">' . $btPowrot . '</a>';
+        header("Location: index.php");
         break;
         
     case 803:  //Dodanie rekordu - lekarz
@@ -283,8 +284,6 @@ switch ($kodOperacji){
                     $_SESSION['bladEdycji'] = "Wprowadź poprawny login pacjenta";
                     header("Location: index.php?operacja=803");
                 }
-
-
                 if(isset($_POST['data'])){
                     //Walidacja wprowadzonych danych
                     $walidacja = true;
@@ -310,9 +309,9 @@ switch ($kodOperacji){
                         $val4 = $_POST['pomiar'];
                         $val5 = $_SESSION['zalogowany'];
                         $szablon->execute(); 
-                        echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
+                        $_SESSION['Dodano'] = "Dodano nowy pomiar tętna dla pacjenta: " . $_POST['pacjent'];
                         $szablon->close();
-                        echo '<a href="index.php?operacja=801">' . $btPowrot . '</a>';
+                        header("Location: index.php?operacja=803");
                     }
                 }
                 break;
@@ -342,9 +341,9 @@ switch ($kodOperacji){
                         $val4 = $_POST['pomiar'];
                         $val5 = $_SESSION['zalogowany'];
                         $szablon->execute(); 
-                        echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
+                        $_SESSION['Dodano'] = "Dodano nowy pomiar ciśnienia dla pacjenta: " . $_POST['pacjent'];
                         $szablon->close();
-                        echo '<a href="index.php?operacja=801">' . $btPowrot . '</a>';
+                        header("Location: index.php?operacja=803");
                     }
                 }
                     break;
@@ -374,9 +373,9 @@ switch ($kodOperacji){
                         $val4 = $_POST['pomiar'];
                         $val5 = $_SESSION['zalogowany'];
                         $szablon->execute(); 
-                        echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
+                        $_SESSION['Dodano'] = "Dodano nowy pomiar saturacji dla pacjenta: " . $_POST['pacjent'];
                         $szablon->close();
-                        echo '<a href="index.php?operacja=801">' . $btPowrot . '</a>';
+                        header("Location: index.php?operacja=803");
                     }
                 }
                 break;
@@ -406,9 +405,9 @@ switch ($kodOperacji){
                         $val4 = $_POST['pomiar'];
                         $val5 = $_SESSION['zalogowany'];
                         $szablon->execute(); 
-                        echo "Dodano " . $mojePolaczenie->affected_rows . " rekord<br>";
+                        $_SESSION['Dodano'] = "Dodano nowy pomiar poziomu cukru dla pacjenta: " . $_POST['pacjent'];
                         $szablon->close();
-                        echo '<a href="index.php?operacja=801">' . $btPowrot . '</a>';
+                        header("Location: index.php?operacja=803");
                     }
                 }
                 break;
@@ -418,11 +417,12 @@ switch ($kodOperacji){
     default:
         header("Location: ./");
 }
+ob_end_flush();
 ?>
 </div>
 
 <div class="container">
-  <?php
+<?php
     include "Includes/stopka.php";
-  ?>
+?>
 </div>

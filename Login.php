@@ -2,26 +2,32 @@
   if(isset($_SESSION['bladLogowania'])){
       echo '<div class="alert alert-danger" role="alert">';
         echo $_SESSION['bladLogowania'];
-      echo '</div>';
+      echo '</div><br>';
       session_unset();
   }
   if(isset($_SESSION['bladRejestracji'])){
       echo '<div class="alert alert-danger" role="alert">';
         echo $_SESSION['bladRejestracji'];
-      echo '</div>';
+      echo '</div><br>';
       session_unset();
   }
   if(isset($_SESSION['Zarejestrowano'])){
     echo '<div class="alert alert-success" role="alert">';
       echo $_SESSION['Zarejestrowano'];
-    echo '<br></div>';
+    echo '</div><br>';
     session_unset();
-}
+  }
+  if(isset($_SESSION['Usunieto'])){
+    echo '<div class="alert alert-danger" role="alert">';
+      echo $_SESSION['Usunieto'];
+    echo '</div><br>';
+    session_unset();
+  }
 
   if(isset($_SESSION['zalogowany'])){
       echo '<div class="alert alert-success" role="alert">';
         echo 'Zalogowany jest: ' . $_SESSION['zalogowany'];
-      echo '</div>';
+      echo '</div><br>';
   }
 
   $_SESSION['startLogowania'] = 1; //Zapisuję, że otwarto formularz logowania

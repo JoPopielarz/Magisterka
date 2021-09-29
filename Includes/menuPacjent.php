@@ -3,8 +3,7 @@
         <hr>
         <button class="btn btn-ssecondary dropdown-toggle" type="button" id="menuLista2"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <?php echo $mn_konto; ?>
-        </button>
+            <?php echo $mn_konto; ?></button>
         <div class="dropdown-menu" aria-labelledby="menuLista2">
         <a class="dropdown-item" href="index.php?operacja=201"><?php echo $mnKonto_Wyloguj; ?></a>
         <a class="dropdown-item" href="index.php?operacja=202"><?php echo $mnKonto_MojeKonto; ?></a>
@@ -15,8 +14,7 @@
     <div class="btn-group">
         <button class="btn btn-ssecondary dropdown-toggle" type="button" id="menuLista3"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <?php echo $mn_tetno; ?>
-        </button>
+            <?php echo $mn_tetno; ?></button>
         <div class="dropdown-menu" aria-labelledby="menuLista3">
         <a class="dropdown-item" href="index.php?operacja=301"><?php echo $mn_Wyswietl; ?></a>
         <a class="dropdown-item" href="index.php?operacja=302"><?php echo $mn_Dodaj; ?></a>
@@ -26,8 +24,7 @@
     <div class="btn-group">
         <button class="btn btn-ssecondary dropdown-toggle" type="button" id="menuLista4"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <?php echo $mn_cisnienie; ?>
-        </button>
+            <?php echo $mn_cisnienie; ?></button>
         <div class="dropdown-menu" aria-labelledby="menuLista4">
         <a class="dropdown-item" href="index.php?operacja=401"><?php echo $mn_Wyswietl; ?></a>
         <a class="dropdown-item" href="index.php?operacja=402"><?php echo $mn_Dodaj; ?></a>
@@ -37,8 +34,7 @@
     <div class="btn-group">
         <button class="btn btn-ssecondary dropdown-toggle" type="button" id="menuLista5"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <?php echo $mn_saturacja; ?>
-        </button>
+            <?php echo $mn_saturacja; ?></button>
         <div class="dropdown-menu" aria-labelledby="menuLista5">
         <a class="dropdown-item" href="index.php?operacja=501"><?php echo $mn_Wyswietl; ?></a>
         <a class="dropdown-item" href="index.php?operacja=502"><?php echo $mn_Dodaj; ?></a>
@@ -48,8 +44,7 @@
     <div class="btn-group">
         <button class="btn btn-ssecondary dropdown-toggle" type="button" id="menuLista6"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <?php echo $mn_cukier; ?>
-        </button>
+            <?php echo $mn_cukier; ?></button>
         <div class="dropdown-menu" aria-labelledby="menuLista6">
         <a class="dropdown-item" href="index.php?operacja=601"><?php echo $mn_Wyswietl; ?></a>
         <a class="dropdown-item" href="index.php?operacja=602"><?php echo $mn_Dodaj; ?></a>
