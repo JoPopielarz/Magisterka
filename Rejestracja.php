@@ -55,7 +55,7 @@ if(isset($_POST['nazwa'])){
     //Hashowanie hasła
     $hasloHash = password_hash($_POST['haslo'], PASSWORD_DEFAULT);
     //Sprawdzenie reCAPTCHA
-    $key = "6LcWdY4cAAAAAMsZj2Tu_4l2z2a_5S_iRXsxz1Ze";
+    $key = "Tajny klucz reCAPTCHA";
     $sprawdzanie = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$key.'&response='.$_POST['g-recaptcha-response']);
     $odpowiedz = json_decode($sprawdzanie);
     if($odpowiedz->success==false){
