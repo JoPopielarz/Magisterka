@@ -2,9 +2,9 @@
 function polaczenie(){
     global $txtBladPolaczenia;
     $serwerDB = "mysql.agh.edu.pl";
-    $login = "popiela1";
-    $haslo = "Magisterka2021";
-    $baza = "popiela1";
+    $login = "login";
+    $haslo = "hasło";
+    $baza = "nazwa bazy danych";
 
     if(isset($_SESSION['bladPolaczenia'])) unset($_SESSION['bladPolaczenia']);
     $polaczenie = @new mysqli($serwerDB, $login, $haslo, $baza);
